@@ -1,0 +1,10 @@
+
+export const START_LOCATION_FETCH = 'START_LOCATION_FETCH';
+export const COMPLETE_LOCATION_FETCH = 'COMPLETE_LOCATION_FETCH';
+export const ADD_MOVIE = 'ADD_MOVIE';
+export const REMOVE_MOVIE = ' REMOVE_MOVIE';
+export const ADD_HOBBY = 'ADD_HOBBY';
+export const REMOVE_HOBBY = 'REMOVE_HOBBY';
+export const CHANGE_NAME = 'CHANGE_export NAME';
+
+

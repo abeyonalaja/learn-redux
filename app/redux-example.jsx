@@ -3,21 +3,140 @@ var redux = require('redux');
 
 console.log("hi from redux");
 
-let reducer = (state = {name: 'Anonymous' }, action) => {
-  // state = state || { name: 'Anonymous' };
-  console.log('NEW Action', action);
-  return state;
+const ADD_MOVIE = 'ADD_MOVIE';
+const ADD_HOBBY = 'ADD_HOBBY';
+const REMOVE_HOBBY = 'REMOVE_HOBBY';
+const CHANGE_NAME = 'CHANGE_NAME';
+
+var stateDefault = {
+  name: 'Anonymous',
+  hobbies: [],
+  movies: []
 };
 
-let store = redux.createStore(reducer);
+let nextHobbyId = 1;
+let nextMovieId = 1;
+let oldReducer = (state = stateDefault, action) => {
+  // state = state || { name: 'Anonymous' };
+  switch(action.type){
+  case 'CHANGE_NAME':
+    return {
+      ...state,
+      name: action.name
+    };
+  case 'ADD_HOBBY':
+    return {
+      ...state,
+      hobbies: [
+        ...state.hobbies,{
+          id: nextHobbyId++,
+          hobby: action.hobby}
+      ]
+    };
+  case REMOVE_HOBBY:
+    return {
+      ...state,
+      hobbies: state.hobbies.filter((hobby) => hobby.id !== action.id)
+    };
+  case ADD_MOVIE:
+    return {
+      ...state,
+      movies: [
+        ...state.movies,{
+          id: nextMovieId++,
+          title: action.movie.title,
+          genre: action.movie.genre
+        }
+      ]
+    };
+  default:
+    return state;
+  }
+};
+
+let nameReducer = (state = 'Anonymous', action) => {
+
+  switch(action.type){
+    case CHANGE_NAME:
+      return action.name;
+    default:
+      return state;
+  }
+  
+};
+
+let hobbiesReducer = (state = [], action) => {
+
+  switch(action.type){
+    case ADD_HOBBY:
+      return [ 
+        ...state,
+        {
+          id: nextHobbyId++,
+          hobby: action.hobby
+        }
+      ];
+    case REMOVE_HOBBY:
+    return [
+      state.filter((hobby) => hobby.id !== action.id)
+    ];
+    default:
+      return state;
+  }
+  
+};
+
+let reducer = redux.combineReducers({
+  name: nameReducer,
+  hobbies: hobbiesReducer
+});
+
+let store = redux.createStore(reducer, redux.compose(
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+));
+
+let unsubscribe = store.subscribe(() => {
+  let state = store.getState();
+
+  console.log("Name is ", state.name);
+  document.getElementById('app').innerHTML = state.name;
+
+  console.log('New state', state);
+});
 
 let currentState = store.getState();
 
-console.log('currentState', currentState);
 
 let action = {
   type: 'CHANGE_NAME',
   name: 'ABEY'
 };
+
+store.dispatch({
+  type: 'ADD_HOBBY',
+  hobby: 'Running'
+});
+
+store.dispatch({
+  type: 'ADD_HOBBY',
+  hobby: 'Walking'
+});
+
+
+
+store.dispatch({
+  type: ADD_MOVIE,
+  movie: {genre: 'drama', title:"go fish"}
+});
+
+store.dispatch({
+  type: ADD_MOVIE,
+  movie: {genre: 'action', title:'Die Hard'}
+});
+
+store.dispatch({
+  type: REMOVE_HOBBY,
+  id: 2
+});
 
 store.dispatch(action);

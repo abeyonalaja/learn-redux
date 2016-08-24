@@ -22,7 +22,9 @@ let reducer = (state = stateDefault, action) => {
   }
 };
 
-var store = redux.createStore(reducer);
+var store = redux.createStore(reducer, redux.compose(
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+));
 
 let action = {
   type: 'CHANGE_SEARCH_TEXT',

@@ -4,6 +4,7 @@ var redux = require('redux');
 console.log("hi from redux");
 
 const ADD_MOVIE = 'ADD_MOVIE';
+const REMOVE_MOVIE = ' REMOVE_MOVIE';
 const ADD_HOBBY = 'ADD_HOBBY';
 const REMOVE_HOBBY = 'REMOVE_HOBBY';
 const CHANGE_NAME = 'CHANGE_NAME';
@@ -77,18 +78,39 @@ let hobbiesReducer = (state = [], action) => {
         }
       ];
     case REMOVE_HOBBY:
-    return [
-      state.filter((hobby) => hobby.id !== action.id)
-    ];
+      return [
+        state.filter((hobby) => hobby.id !== action.id)
+      ];
     default:
       return state;
   }
   
 };
 
+let moviesReducer = (state = [], action) => {
+
+  switch(action.type){
+    case ADD_MOVIE:
+      return [
+        ...state, {
+          id: nextMovieId++,
+          genre: action.genre,
+          title: action.title
+        }
+      ];
+    case REMOVE_MOVIE:
+      return [
+        state.filter((movie) => movie.id !== action.id)
+      ];
+  default:
+      return state;
+  }
+};
+
 let reducer = redux.combineReducers({
   name: nameReducer,
-  hobbies: hobbiesReducer
+  hobbies: hobbiesReducer,
+  movies: moviesReducer
 });
 
 let store = redux.createStore(reducer, redux.compose(
@@ -126,12 +148,14 @@ store.dispatch({
 
 store.dispatch({
   type: ADD_MOVIE,
-  movie: {genre: 'drama', title:"go fish"}
+  genre: 'drama',
+  title:"go fish"
 });
 
 store.dispatch({
   type: ADD_MOVIE,
-  movie: {genre: 'action', title:'Die Hard'}
+  genre: 'action',
+  title:'Die Hard'
 });
 
 store.dispatch({

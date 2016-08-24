@@ -9,51 +9,6 @@ const ADD_HOBBY = 'ADD_HOBBY';
 const REMOVE_HOBBY = 'REMOVE_HOBBY';
 const CHANGE_NAME = 'CHANGE_NAME';
 
-var stateDefault = {
-  name: 'Anonymous',
-  hobbies: [],
-  movies: []
-};
-
-let nextHobbyId = 1;
-let nextMovieId = 1;
-let oldReducer = (state = stateDefault, action) => {
-  // state = state || { name: 'Anonymous' };
-  switch(action.type){
-  case 'CHANGE_NAME':
-    return {
-      ...state,
-      name: action.name
-    };
-  case 'ADD_HOBBY':
-    return {
-      ...state,
-      hobbies: [
-        ...state.hobbies,{
-          id: nextHobbyId++,
-          hobby: action.hobby}
-      ]
-    };
-  case REMOVE_HOBBY:
-    return {
-      ...state,
-      hobbies: state.hobbies.filter((hobby) => hobby.id !== action.id)
-    };
-  case ADD_MOVIE:
-    return {
-      ...state,
-      movies: [
-        ...state.movies,{
-          id: nextMovieId++,
-          title: action.movie.title,
-          genre: action.movie.genre
-        }
-      ]
-    };
-  default:
-    return state;
-  }
-};
 
 let nameReducer = (state = 'Anonymous', action) => {
 
@@ -66,6 +21,14 @@ let nameReducer = (state = 'Anonymous', action) => {
   
 };
 
+let changeName = (name) => {
+  return {
+    type: CHANGE_NAME,
+    name
+  };
+};
+
+let nextHobbyId = 1;
 let hobbiesReducer = (state = [], action) => {
 
   switch(action.type){
@@ -87,6 +50,21 @@ let hobbiesReducer = (state = [], action) => {
   
 };
 
+let addHobby = (hobby) => {
+  return {
+    type: ADD_HOBBY,
+    hobby
+  };
+};
+
+let removeHobby = (id) => {
+  return {
+    type: REMOVE_HOBBY,
+    id
+  };
+};
+
+let nextMovieId = 1;
 let moviesReducer = (state = [], action) => {
 
   switch(action.type){
@@ -105,6 +83,21 @@ let moviesReducer = (state = [], action) => {
   default:
       return state;
   }
+};
+
+let addMovie = (genre, title) => {
+  return {
+    type: ADD_MOVIE,
+    genre,
+    title
+  };
+};
+
+let removeMovie = (id) => {
+  return {
+    type: REMOVE_MOVIE,
+    id
+  };
 };
 
 let reducer = redux.combineReducers({
@@ -134,33 +127,11 @@ let action = {
   name: 'ABEY'
 };
 
-store.dispatch({
-  type: 'ADD_HOBBY',
-  hobby: 'Running'
-});
+store.dispatch(addHobby('Running'));
 
-store.dispatch({
-  type: 'ADD_HOBBY',
-  hobby: 'Walking'
-});
-
-
-
-store.dispatch({
-  type: ADD_MOVIE,
-  genre: 'drama',
-  title:"go fish"
-});
-
-store.dispatch({
-  type: ADD_MOVIE,
-  genre: 'action',
-  title:'Die Hard'
-});
-
-store.dispatch({
-  type: REMOVE_HOBBY,
-  id: 2
-});
+store.dispatch(addHobby('Walking'));
+store.dispatch(addMovie('drama','go fish'));
+store.dispatch(addMovie('action','Die Hard'));
+store.dispatch(removeHobby(2));
 
 store.dispatch(action);
